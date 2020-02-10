@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    protected $fillable = ['body'];
+    protected $fillable = ['body', 'image'];
     protected $guard = [];
 
     protected static function boot()
     {
         parent::boot();
         static::addGlobalScope(new ReverseScope());
-    } 
+    }
 
     public function user()
     {

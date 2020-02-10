@@ -24,20 +24,24 @@ class RetrievePostsTest extends TestCase
             ->assertJson([
                 'data' => [
                     [
-                        'data' => [ 
+                        'data' => [
                             'type' => 'posts',
                             'post_id' => $posts->last()->id,
                             'attributes' => [
                                 'body'=> $posts->last()->body,
+                                'image'=> $posts->last()->image,
+                                'posted_at'=> $posts->last()->created_at->diffForHumans(),
                             ]
                         ]
                     ],
                     [
-                        'data' => [ 
+                        'data' => [
                             'type' => 'posts',
                             'post_id' => $posts->first()->id,
                             'attributes' => [
                                 'body'=> $posts->first()->body,
+                                'image'=> $posts->first()->image,
+                                'posted_at'=> $posts->first()->created_at->diffForHumans(),
                             ]
                         ]
                     ]
@@ -54,7 +58,7 @@ class RetrievePostsTest extends TestCase
         $posts = factory(Post::class, 2)->create();
 
         $response = $this->get('/api/posts');
-        
+
         $response->assertStatus(200)
             ->assertExactJson([
                 'data' => [],
