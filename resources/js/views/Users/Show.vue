@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col items-center mb-8" v-if="user && posts">
+    <div class="flex flex-col items-center mb-8" v-if="status.user === 'success' && user">
         <div class="relative">
             <div class="w-100 h-64 overflow-hidden z-10">
                 <img src="https://static.wixstatic.com/media/09a3d5_55fd1b81f9094845ae7e43ec23c869b6~mv2_d_3072_2048_s_2.jpg" class="object-cover w-full">
@@ -31,10 +31,11 @@
             </div>
         </div>
 
-        <p v-if="postLoading && posts != undefined ">Loding posts...</p>
+        <div v-if="status.posts === 'loading'">Loding posts...</div>
+
+        <div v-else-if="posts.length < 1" >No posts found. Get started</div>
 
         <Post v-else v-for="post in posts.data" :key="post.data.post_id" :post="post"/>
-        <p v-if="!postLoading && posts.data.length < 1" >No posts found. Get started</p>
     </div>
 </template>
 <script>
@@ -46,30 +47,17 @@ export default {
     components: {
         Post
     },
-    data: () => {
-        return {
-            postLoading: true,
-            posts: undefined
-        };
-    },
     mounted(){
         axios.defaults. baseURL = 'http://localhost/facebook-clone/public/';
         this.$store.dispatch('fetchUser', this.$route.params.userId);
-
-         axios.get('/api/users/' + this.$route.params.userId + '/posts')
-            .then(res => {
-                this.posts = res.data;
-            })
-            .catch(error => {
-                console.log("Unable to featch posts");
-            }).finally(() => {
-                this.postLoading = false;
-            });;
+        this.$store.dispatch('fetchUserPosts', this.$route.params.userId);
     },
 
     computed: {
         ...mapGetters({
             user: 'user',
+            posts: 'posts',
+            status: 'status',
             friendButtonText: 'friendButtonText'
         })
     }

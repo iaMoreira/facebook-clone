@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Friend;
 use App\Http\Resources\PostCollectionResource;
 use App\Http\Resources\PostResource;
 use App\Post;
@@ -16,7 +17,15 @@ class PostController extends Controller
      */
     public function index()
     {
-        return new PostCollectionResource(request()->user()->posts);     
+        $friends = Friend::friendships();
+        if($friends->isEmpty()){
+            return new PostCollectionResource(request()->user()->posts);
+        }
+
+        return new PostCollectionResource(
+            Post::whereIn('user_id', [$friends->pluck('user_id'), $friends->pluck('friend_id')])
+                ->get()
+        );
     }
 
     /**
@@ -33,7 +42,7 @@ class PostController extends Controller
 
 
         $post = request()->user()->posts()->create($data['data']['attributes']);
-         
+
         return new PostResource($post);
     }
 
