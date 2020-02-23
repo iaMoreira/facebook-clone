@@ -76,7 +76,7 @@ class FriendsTest extends TestCase
         ])->assertStatus(200);
 
         $response = $this->actingAs($anotherUser, 'api')
-            ->post('api/fried-request-response', [
+            ->post('api/friend-request-response', [
                 'user_id'  => $user->id,
                 'status' => 1,
             ])->assertStatus(200);
@@ -92,6 +92,8 @@ class FriendsTest extends TestCase
                 'friend_request_id' => $friendRequest->id,
                 'attributes' => [
                     'confirmed_at' => $friendRequest->confirmed_at->diffForHumans(),
+                    'friend_id' => $friendRequest->friend_id,
+                    'user_id' => $friendRequest->user_id,
                 ]
             ],
             'links' => [
@@ -112,7 +114,7 @@ class FriendsTest extends TestCase
         ])->assertStatus(200);
 
         $response = $this->actingAs($anotherUser, 'api')
-            ->delete('api/fried-request-response/delete', [
+            ->delete('api/friend-request-response/delete', [
                 'user_id'  => $user->id,
             ])->assertStatus(204);
 
@@ -127,7 +129,7 @@ class FriendsTest extends TestCase
         $anotherUser = factory(User::class)->create();
 
         $response = $this->actingAs($anotherUser, 'api')
-            ->post('api/fried-request-response', [
+            ->post('api/friend-request-response', [
                 'user_id'  => 123,
                 'status' => 1,
             ])->assertStatus(404);
@@ -153,7 +155,7 @@ class FriendsTest extends TestCase
         ])->assertStatus(200);
 
         $response = $this->actingAs(factory(User::class)->create(), 'api')
-            ->post('api/fried-request-response', [
+            ->post('api/friend-request-response', [
                 'user_id'  => $user->id,
                 'status' => 1,
             ])->assertStatus(404);
@@ -180,7 +182,7 @@ class FriendsTest extends TestCase
         ])->assertStatus(200);
 
         $response = $this->actingAs(factory(User::class)->create(), 'api')
-            ->delete('api/fried-request-response/delete', [
+            ->delete('api/friend-request-response/delete', [
                 'user_id'  => $user->id,
             ])->assertStatus(404);
 
@@ -210,7 +212,7 @@ class FriendsTest extends TestCase
     public function test_a_user_id_and_status_required_for_friend_request_responses()
     {
         $response = $this->actingAs($user = factory(User::class)->create(), 'api')
-            ->post('api/fried-request-response', [
+            ->post('api/friend-request-response', [
                 'user_id'  => '',
                 'status' => '',
             ])->assertStatus(422);
@@ -223,7 +225,7 @@ class FriendsTest extends TestCase
     public function test_a_user_id_is_required_for_friend_request_responses()
     {
         $response = $this->actingAs($user = factory(User::class)->create(), 'api')
-            ->delete('api/fried-request-response/delete', [
+            ->delete('api/friend-request-response/delete', [
                 'user_id'  => '',
             ])->assertStatus(422);
 

@@ -19,10 +19,10 @@ class FriendRequestController extends Controller
             'friend_id' => 'required',
         ]);
 
-        try{
+        try {
             User::findOrFail($data['friend_id'])
                 ->friends()->attach(auth()->user());
-        }catch(ModelNotFoundException $e){
+        } catch (ModelNotFoundException $e) {
             throw new UserNotFoundException();
         }
 
@@ -32,6 +32,4 @@ class FriendRequestController extends Controller
                 ->first()
         );
     }
-
-    
 }
