@@ -218,7 +218,7 @@ class FriendsTest extends TestCase
     }
 
 
-    public function test_a_friend_id_is_required_for_friend_request()
+    public function test_a_friend_id_is_required_for_friend_requests()
     {
         $response = $this->actingAs($user = factory(User::class)->create(), 'api')
             ->post('/api/friend-request', [

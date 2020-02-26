@@ -2,11 +2,17 @@
     <div class="flex flex-col items-center mb-8" v-if="status.user === 'success' && user">
         <div class="relative">
             <div class="w-100 h-64 overflow-hidden z-10">
-                <img src="https://static.wixstatic.com/media/09a3d5_55fd1b81f9094845ae7e43ec23c869b6~mv2_d_3072_2048_s_2.jpg" class="object-cover w-full">
+                <UploadableImage image-width="1200" image-height="500" location="cover"
+                    :user-image="user.data.attributes.cover_image" classes="object-cover w-full" alt="bg image"/>
             </div>
             <div class="absolute flex items-center bottom-0 left-0 -mb-8 ml-12 z-20">
                 <div class="w-32">
-                    <img class="object-cover w-32 h-32 border-4 boder-gray-200 rounded-full shadow-lg" src="https://cdn.pixabay.com/photo/2014/07/09/10/04/man-388104_960_720.jpg" alt="">
+                    <UploadableImage image-width="750"
+                        image-height="750"
+                        location="profile"
+                        :user-image="user.data.attributes.profile_image"
+                        classes="object-cover w-32 h-32 border-4 boder-gray-200 rounded-full shadow-lg"
+                        alt="bg image"/>
                 </div>
                 <p class="text-2xl text-gray-100 ml-4">{{user.data.attributes.name}}</p>
             </div>
@@ -31,21 +37,23 @@
             </div>
         </div>
 
-        <div v-if="status.posts === 'loading'">Loding posts...</div>
+        <div v-if="newsStatus.postsStatus === 'loading'">Loding posts...</div>
 
         <div v-else-if="posts.length < 1" >No posts found. Get started</div>
 
-        <Post v-else v-for="post in posts.data" :key="post.data.post_id" :post="post"/>
+        <Post v-else v-for="(post, postKey) in posts.data" :key="postKey" :post="post"/>
     </div>
 </template>
 <script>
 
-import Post from '../../components/Post'
+import Post from '../../components/Post';
+import UploadableImage from '../../components/UploadableImage';
 import {mapGetters} from 'vuex';
 export default {
     name: "Show",
     components: {
-        Post
+        Post,
+        UploadableImage,
     },
     mounted(){
         axios.defaults. baseURL = 'http://localhost/facebook-clone/public/';
@@ -58,6 +66,7 @@ export default {
             user: 'user',
             posts: 'posts',
             status: 'status',
+            newsStatus: 'newsStatus',
             friendButtonText: 'friendButtonText'
         })
     }
